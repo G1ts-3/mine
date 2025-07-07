@@ -1,0 +1,6 @@
+MULAI BELAJAR DARI: 
+- HTML
+- CSS
+- PHP
+- JS
+- Java
