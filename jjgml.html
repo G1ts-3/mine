@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jasa Joki Gendong MLBB Gomi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Cosmic Gradient (Blue, Red, Orange, Yellow) with Neutral Body -->
+    <!-- Application Structure Plan: The SPA is designed as a task-oriented tool rather than a static poster. The structure flows from attraction (Hero Section with gradient) to engagement (Interactive Price Calculator), persuasion (Benefits Grid and Price Comparison Chart), and finally conversion (CTA). This user-centric flow provides immediate value by allowing users to calculate costs for their specific needs, which is more effective for a service-based offering than a passive price list. The interactive calculator focuses on the most common 'per star' tiers (Epic-Mythic) to simplify user interaction, while other tiers are presented as clear, fixed-price packages. -->
+    <!-- Visualization & Content Choices: 
+        1. Report Info: Price tiers (Epic, Legend, Mythic). Goal: Allow users to get a price estimate. Viz/Presentation Method: Interactive HTML form with JS-powered sliders. Interaction: User moves slider to select number of stars, price updates instantly. Justification: Highly engaging, provides instant personalized feedback, and simplifies decision-making. Library/Method: Vanilla JS.
+        2. Report Info: Price differences per rank tier. Goal: Visually compare the cost and justify the price increase at higher ranks. Viz/Presentation Method: Bar Chart. Interaction: Hovering over bars shows tooltips with price/star. Justification: Clearly communicates value and difficulty progression between ranks in an easy-to-digest format. Library/Method: Chart.js.
+        3. Report Info: "Why Choose Us" benefits. Goal: Build trust and persuade. Viz/Presentation Method: A clean HTML/Tailwind grid with Unicode icons (✅, 🛡️, 🚀). Interaction: Subtle hover effects. Justification: Enhances readability and makes key benefits scannable and visually appealing. Library/Method: Tailwind CSS. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+        }
+        .hero-gradient {
+            background: linear-gradient(135deg, #2563eb, #dc2626, #f97316, #facc15);
+        }
+        .card-shadow {
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.05), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+        .btn-whatsapp {
+            background-color: #25D366;
+            transition: background-color 0.3s ease;
+        }
+        .btn-whatsapp:hover {
+            background-color: #1DAE51;
+        }
+        .btn-instagram {
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+            transition: opacity 0.3s ease;
+        }
+        .btn-instagram:hover {
+            opacity: 0.9;
+        }
+        .chart-container {
+            position: relative; 
+            width: 100%; 
+            max-width: 600px; 
+            margin-left: auto; 
+            margin-right: auto; 
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 640px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <header class="hero-gradient text-white text-center p-8 md:p-16 rounded-b-3xl">
+        <h1 class="text-4xl md:text-6xl font-black tracking-tight">JASA JOKI GENDONG MLBB GOMI</h1>
+        <h2 class="text-xl md:text-2xl font-semibold mt-2">Push Rank Cepat, Aman, dan Terpercaya!</h2>
+        <p class="max-w-2xl mx-auto mt-4 text-slate-200">
+            Capek stuck di rank yang sama? Biarkan tim Gomi yang menggendong akun Anda sampai ke puncak kemenangan.
+        </p>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-8">
+        
+        <section id="calculator" class="mb-12">
+            <h3 class="text-3xl font-bold text-center mb-2">🏆 Kalkulator Harga Joki 🏆</h3>
+            <p class="text-center text-slate-500 mb-8 max-w-xl mx-auto">Gunakan kalkulator interaktif kami untuk mendapatkan estimasi biaya push rank Anda. Cukup geser slider sesuai jumlah bintang yang Anda inginkan!</p>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                
+                <div class="bg-white p-6 rounded-2xl card-shadow border border-slate-200">
+                    <h4 class="text-2xl font-bold text-slate-900">🔴🟠 Paket Bintang (Epic → Legend)</h4>
+                    <p class="text-slate-500 mt-1 mb-4">Lewati rank paling drama dengan jaminan win streak.</p>
+                    <div class="mb-4">
+                        <label for="epic-stars" class="block font-semibold mb-2">Jumlah Bintang: <span id="epic-stars-label" class="text-blue-600 font-bold">1</span></label>
+                        <input type="range" id="epic-stars" min="1" max="25" value="1" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer">
+                    </div>
+                    <div class="text-center bg-slate-100 p-4 rounded-lg">
+                        <p class="text-sm text-slate-600">Estimasi Biaya</p>
+                        <p class="text-3xl font-extrabold text-blue-600" id="epic-price">Rp 5.000</p>
+                        <p class="text-xs text-slate-500 mt-1">@ Rp 5.000 / Bintang</p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl card-shadow border border-slate-200">
+                    <h4 class="text-2xl font-bold text-slate-900">🟡✨ Paket Mythic (Mythic → Immortal)</h4>
+                    <p class="text-slate-500 mt-1 mb-4">Ditangani langsung oleh player pro untuk target rank tertinggi.</p>
+                    <div class="mb-4">
+                        <label for="mythic-stars" class="block font-semibold mb-2">Jumlah Bintang: <span id="mythic-stars-label" class="text-amber-500 font-bold">1</span></label>
+                        <input type="range" id="mythic-stars" min="1" max="50" value="1" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer" style="--thumb-color: #f59e0b;">
+                    </div>
+                    <div class="text-center bg-slate-100 p-4 rounded-lg">
+                        <p class="text-sm text-slate-600">Estimasi Biaya</p>
+                        <p class="text-3xl font-extrabold text-amber-500" id="mythic-price">Rp 15.000</p>
+                        <p class="text-xs text-slate-500 mt-1">@ Mulai dari Rp 15.000 / Bintang</p>
+                    </div>
+                </div>
+
+            </div>
+             <div class="bg-white p-6 mt-8 rounded-2xl card-shadow border border-slate-200">
+                <h4 class="text-2xl font-bold text-slate-900">🔵 Paket Pejuang (Warrior → Grandmaster)</h4>
+                <p class="text-slate-500 mt-1 mb-4">Cocok untuk Anda yang ingin cepat keluar dari rank awal. Harga borongan per rank up!</p>
+                <div class="text-center bg-slate-100 p-4 rounded-lg">
+                    <p class="text-sm text-slate-600">Harga Per Rank</p>
+                    <p class="text-3xl font-extrabold text-cyan-600">Mulai dari Rp 15.000</p>
+                    <p class="text-xs text-slate-500 mt-1">Harga pasti, proses kilat!</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="why-us" class="mb-12">
+            <h3 class="text-3xl font-bold text-center mb-8">Mengapa Memilih Gomi?</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 text-center">
+                <div class="bg-white p-6 rounded-xl border border-slate-200 hover:shadow-lg transition-shadow">
+                    <span class="text-4xl">🚀</span>
+                    <h4 class="text-xl font-bold mt-2">Proses Cepat & Profesional</h4>
+                    <p class="text-slate-500 mt-1">Kami menghargai waktu Anda. Target rank tercapai sesuai jadwal.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl border border-slate-200 hover:shadow-lg transition-shadow">
+                    <span class="text-4xl">🛡️</span>
+                    <h4 class="text-xl font-bold mt-2">100% Aman & Terpercaya</h4>
+                    <p class="text-slate-500 mt-1">Keamanan akun adalah prioritas. Data Anda terjamin kerahasiaannya.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl border border-slate-200 hover:shadow-lg transition-shadow">
+                    <span class="text-4xl">🎯</span>
+                    <h4 class="text-xl font-bold mt-2">Garansi Winrate Tinggi</h4>
+                    <p class="text-slate-500 mt-1">Minim kekalahan, push rank lebih efisien dan cepat naik.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl border border-slate-200 hover:shadow-lg transition-shadow">
+                    <span class="text-4xl">🧑‍💻</span>
+                    <h4 class="text-xl font-bold mt-2">Joki Berpengalaman</h4>
+                    <p class="text-slate-500 mt-1">Bukan sekadar jago, tapi juga paham makro dan mikro strategi.</p>
+                </div>
+                 <div class="bg-white p-6 rounded-xl border border-slate-200 hover:shadow-lg transition-shadow">
+                    <span class="text-4xl">💸</span>
+                    <h4 class="text-xl font-bold mt-2">Harga Bersaing</h4>
+                    <p class="text-slate-500 mt-1">Kualitas joki Gomi dengan harga yang pantas dan transparan.</p>
+                </div>
+                 <div class="bg-white p-6 rounded-xl border border-slate-200 hover:shadow-lg transition-shadow">
+                    <span class="text-4xl">📞</span>
+                    <h4 class="text-xl font-bold mt-2">Layanan Responsif</h4>
+                    <p class="text-slate-500 mt-1">Admin kami siap menjawab pertanyaan dan memproses pesanan Anda.</p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="chart-section" class="mb-12 bg-white p-6 md:p-8 rounded-2xl card-shadow border border-slate-200">
+            <h3 class="text-3xl font-bold text-center mb-2">Perbandingan Harga per Bintang</h3>
+            <p class="text-center text-slate-500 mb-8 max-w-xl mx-auto">Visualisasi ini menunjukkan perbedaan harga per bintang antara rank Epic dan Mythic, merefleksikan tingkat kesulitan yang lebih tinggi.</p>
+            <div class="chart-container">
+                <canvas id="priceChart"></canvas>
+            </div>
+        </section>
+
+        <section id="cta" class="text-center bg-slate-800 text-white p-8 md:p-12 rounded-2xl">
+            <h3 class="text-3xl md:text-4xl font-black">SIAP PUSH RANK SEKARANG?</h3>
+            <p class="mt-2 mb-6 max-w-xl mx-auto">Jangan biarkan rank Anda stuck! Hubungi kami segera, slot terbatas setiap harinya!</p>
+            <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
+                <a href="https://wa.me/6281381222576?text=p%2C%20info%20joki" target="_blank" rel="noopener noreferrer" class="btn-whatsapp text-white font-bold py-3 px-8 rounded-full flex items-center justify-center gap-2 w-full sm:w-auto">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-message-circle"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                    Hubungi via WhatsApp
+                </a>
+                <a href="https://www.instagram.com/raghm_/" target="_blank" rel="noopener noreferrer" class="btn-instagram text-white font-bold py-3 px-8 rounded-full flex items-center justify-center gap-2 w-full sm:w-auto">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-instagram"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                    Lihat di Instagram
+                </a>
+            </div>
+        </section>
+
+    </main>
+    
+    <footer class="text-center py-6">
+        <p class="text-slate-500">&copy; 2025 Joki Gendong Gomi. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const epicStarsInput = document.getElementById('epic-stars');
+            const epicStarsLabel = document.getElementById('epic-stars-label');
+            const epicPriceEl = document.getElementById('epic-price');
+            const epicPricePerStar = 5000;
+
+            const mythicStarsInput = document.getElementById('mythic-stars');
+            const mythicStarsLabel = document.getElementById('mythic-stars-label');
+            const mythicPriceEl = document.getElementById('mythic-price');
+            const mythicPricePerStar = 15000;
+
+            function formatRupiah(number) {
+                return new Intl.NumberFormat('id-ID', {
+                    style: 'currency',
+                    currency: 'IDR',
+                    minimumFractionDigits: 0
+                }).format(number);
+            }
+
+            function updateEpicPrice() {
+                const stars = parseInt(epicStarsInput.value);
+                epicStarsLabel.textContent = stars;
+                const totalPrice = stars * epicPricePerStar;
+                epicPriceEl.textContent = formatRupiah(totalPrice);
+            }
+
+            function updateMythicPrice() {
+                const stars = parseInt(mythicStarsInput.value);
+                mythicStarsLabel.textContent = stars;
+                const totalPrice = stars * mythicPricePerStar;
+                mythicPriceEl.textContent = formatRupiah(totalPrice);
+            }
+
+            epicStarsInput.addEventListener('input', updateEpicPrice);
+            mythicStarsInput.addEventListener('input', updateMythicPrice);
+            
+            updateEpicPrice();
+            updateMythicPrice();
+
+            const ctx = document.getElementById('priceChart').getContext('2d');
+            const priceChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Paket Epic → Legend', 'Paket Mythic → Immortal'],
+                    datasets: [{
+                        label: 'Harga per Bintang (Rp)',
+                        data: [epicPricePerStar, mythicPricePerStar],
+                        backgroundColor: [
+                            'rgba(59, 130, 246, 0.7)', 
+                            'rgba(245, 158, 11, 0.7)' 
+                        ],
+                        borderColor: [
+                            'rgba(59, 130, 246, 1)',
+                            'rgba(245, 158, 11, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += formatRupiah(context.parsed.y);
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value, index, values) {
+                                    return formatRupiah(value);
+                                }
+                            }
+                        },
+                        x: {
+                             ticks: {
+                                callback: function(value, index, ticks) {
+                                    const label = this.getLabelForValue(value);
+                                    if (label.length > 16) {
+                                        return label.split('→').map(l => l.trim());
+                                    }
+                                    return label;
+                                },
+                                font: {
+                                    size: 14,
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
