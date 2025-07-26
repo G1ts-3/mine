@@ -5,3 +5,4 @@ MULAI BELAJAR DARI:
 - JS
 - Java
 - PYTHON
+- GIT
